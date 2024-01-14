@@ -1,0 +1,62 @@
+﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Models;
+using Repositories.Interfaces;
+
+namespace Repositories
+{
+    public class RoleRepository : IRoleRepository
+    {
+        private readonly ShopDb db;
+
+        public RoleRepository(ShopDb db)
+        {
+            this.db = db;
+        }
+
+        public async Task<Role?> CreateAsync(Role data)
+        {
+            EntityEntry<Role> added = await db.Roles.AddAsync(data);
+            return await db.SaveChangesAsync() == 1 ? data : null;
+        }
+
+        public async Task<bool?> DeleteAsync(int id)
+        {
+            Role? role = db.Roles.Find(id);
+
+            if (role is null)
+            {
+                return null;
+            }
+
+            db.Roles.Remove(role);
+            return await db.SaveChangesAsync() == 1 ? true : false;
+        }
+
+        public async Task<IEnumerable<Role>> RetrieveAllAsync()
+        {
+            IEnumerable<Role> roles = db.Roles.ToList();
+            return await Task.FromResult<IEnumerable<Role>>(roles);
+        }
+
+        public async Task<Role?> RetrieveAsync(int id)
+        {
+            Role? role = await db.Roles.FindAsync(id);
+            return role is null ? null : role;
+        }
+
+        public async Task<Role?> UpdateAsync(int id, Role data)
+        {
+            Role? role = db.Roles.Find(id);
+
+            if (role is null)
+            {
+                return null;
+            }
+
+            data.RoleId = id;
+            db.Roles.Update(data);
+
+            return await db.SaveChangesAsync() == 1 ? data : null;
+        }
+    }
+}
