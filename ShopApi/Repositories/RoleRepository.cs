@@ -15,8 +15,8 @@ namespace Repositories
 
         public async Task<Role?> CreateAsync(Role data)
         {
-            EntityEntry<Role> added = await db.Roles.AddAsync(data);
-            return await db.SaveChangesAsync() == 1 ? data : null;
+            Role role = (await db.Roles.AddAsync(data)).Entity;
+            return await db.SaveChangesAsync() == 1 ? role : null;
         }
 
         public async Task<bool?> DeleteAsync(int id)
