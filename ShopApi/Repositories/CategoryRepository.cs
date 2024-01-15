@@ -35,29 +35,29 @@ namespace Repositories
 
         public async Task<IEnumerable<Category>> RetrieveAllAsync()
         {
-            IEnumerable<Category> roles = db.Categories.ToList();
-            return await Task.FromResult<IEnumerable<Category>>(roles);
+            IEnumerable<Category> categories = db.Categories.ToList();
+            return await Task.FromResult<IEnumerable<Category>>(categories);
         }
 
         public async Task<Category?> RetrieveAsync(int id)
         {
-            Category? role = await db.Categories.FindAsync(id);
-            return role is null ? null : role;
+            Category? category = await db.Categories.FindAsync(id);
+            return category is null ? null : category;
         }
 
         public async Task<Category?> UpdateAsync(int id, Category data)
         {
-            Category? role = db.Categories.Find(id);
+            try
+            {
+                data.CategoryId = id;
+                Category category = (db.Categories.Update(data)).Entity;
 
-            if (role is null)
+                return await db.SaveChangesAsync() == 1 ? category : null;
+            }
+            catch
             {
                 return null;
-            }
-
-            data.CategoryId = id;
-            db.Categories.Update(data);
-
-            return await db.SaveChangesAsync() == 1 ? data : null;
+            }            
         }
     }
 }

@@ -46,17 +46,17 @@ namespace Repositories
 
         public async Task<Role?> UpdateAsync(int id, Role data)
         {
-            Role? role = db.Roles.Find(id);
+            try
+            {         
+                data.RoleId = id;
+                Role role = (db.Roles.Update(data)).Entity;
 
-            if (role is null)
+                return await db.SaveChangesAsync() == 1 ? role : null;
+            }  
+            catch
             {
                 return null;
-            }
-
-            data.RoleId = id;
-            db.Roles.Update(data);
-
-            return await db.SaveChangesAsync() == 1 ? data : null;
+            } 
         }
     }
 }

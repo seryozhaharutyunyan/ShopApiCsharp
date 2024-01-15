@@ -19,6 +19,7 @@ builder.Services.AddSwaggerGen(options =>
 
 // Add Repository
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
 
 var app = builder.Build();

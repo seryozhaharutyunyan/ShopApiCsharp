@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Models;
 using Repositories.Interfaces;
 
@@ -8,7 +9,7 @@ namespace ShopApi.Controllers
     [Route("api/[controller]")]
     public class RoleController : ControllerBase
     {
-        public IRoleRepository repository;
+        public readonly IRoleRepository repository;
 
         public RoleController(IRoleRepository repository)
         {
@@ -16,9 +17,61 @@ namespace ShopApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<Role>> Get()
+        public async Task<IActionResult> Get()
         {
-            return await repository.RetrieveAllAsync();
+            IEnumerable<Role> roles = await repository.RetrieveAllAsync();
+
+            return Ok(roles);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(int id)
+        {
+            Role? role = await repository.RetrieveAsync(id);
+
+            if (role is null)
+            {
+                return new NoContentResult(); ;
+            }
+
+            return Ok(role);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Set([FromBody] Role data)
+        {
+            Role? role = await repository.CreateAsync(data);
+            if (role is null)
+            {
+                return new NoContentResult(); ;
+            }
+
+            return Ok(role);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] Role data)
+        {
+            Role? role = await repository.UpdateAsync(id, data);
+
+            if(role is null)
+            {
+                return new NoContentResult();
+            }
+
+            return Ok(role);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            bool? flag = await repository.DeleteAsync(id);
+            if (flag == false || flag is null)
+            {
+                return new NoContentResult();
+            }
+
+            return Ok();
         }
     }
 }

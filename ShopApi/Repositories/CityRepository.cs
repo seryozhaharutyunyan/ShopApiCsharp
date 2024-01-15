@@ -46,17 +46,17 @@ namespace Repositories
 
         public async Task<City?> UpdateAsync(int id, City data)
         {
-            City? city = db.Cities.Find(id);
+            try
+            {
+                data.CityId = id;
+                City city = (db.Cities.Update(data)).Entity;
 
-            if (city is null)
+                return await db.SaveChangesAsync() == 1 ? city : null;
+            }
+            catch
             {
                 return null;
             }
-
-            data.CityId = id;
-            db.Cities.Update(data);
-
-            return await db.SaveChangesAsync() == 1 ? data : null;
         }
     }
 }

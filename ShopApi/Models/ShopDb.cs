@@ -43,7 +43,7 @@ public partial class ShopDb : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         var Configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false).Build();
-         optionsBuilder.UseSqlite(Configuration.GetConnectionString("FileName"));
+         optionsBuilder.UseSqlite(Configuration.GetConnectionString("DefaultConnection"));
     }
        
 
