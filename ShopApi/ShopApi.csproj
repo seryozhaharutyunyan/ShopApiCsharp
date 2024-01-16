@@ -23,7 +23,7 @@
 
   <ItemGroup>
     <None Update="shop.db">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 

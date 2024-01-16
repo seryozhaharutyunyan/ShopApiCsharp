@@ -20,6 +20,9 @@ builder.Services.AddSwaggerGen(options =>
 // Add Repository
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<ICityRepository, CityRepository>();
+builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+builder.Services.AddScoped<IEdgeRepository, EdgeRepository>();
 
 
 var app = builder.Build();
