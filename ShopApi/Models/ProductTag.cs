@@ -12,7 +12,7 @@ public partial class ProductTag
     public int Id { get; set; }
 
     [Required]
-    public int TageId { get; set; }
+    public int TagId { get; set; }
 
     [Required]
     public int ProductId { get; set; }

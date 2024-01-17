@@ -9,7 +9,7 @@ namespace Models;
 public partial class Tag
 {
     [Key]
-    public int TageId { get; set; }
+    public int TagId { get; set; }
 
     [Required]
     [MinLength(2)]
@@ -17,6 +17,6 @@ public partial class Tag
     [Column(TypeName = "NVARCHAR (40)")]
     public string Name { get; set; } = null!;
 
-    [InverseProperty("Tage")]
+    [InverseProperty("Tag")]
     public virtual ICollection<ProductTag> ProductTags { get; set; } = new List<ProductTag>();
 }
