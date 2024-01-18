@@ -19,14 +19,9 @@ namespace Repositories
             return await db.SaveChangesAsync() == 1 ? user : null;
         }
 
-        public async Task<bool?> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
             User? user = db.Users.Find(id);
-
-            if (user is null)
-            {
-                return null;
-            }
 
             db.Users.Remove(user);
             return await db.SaveChangesAsync() == 1 ? true : false;

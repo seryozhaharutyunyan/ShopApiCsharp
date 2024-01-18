@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 
 namespace Models;
@@ -25,6 +26,13 @@ public partial class User
     [EmailAddress]
     [Column(TypeName = "NVARCHAR (126)")]
     public string Email { get; set; } = null!;
+    
+    [Required]
+    [JsonIgnore]
+    [MinLength(8)]
+    [RegularExpression("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9])\\S")]
+    [Column(TypeName = "NVARCHAR (126)")]
+    public string Password { get; set; } = null!;
 
     [Required]
     [Phone]

@@ -8,6 +8,6 @@ namespace Repositories.Interfaces
         Task<User?> RetrieveAsync(int id);
         Task<User?> CreateAsync(User data);
         Task<User?> UpdateAsync(int id, User data);
-        Task<bool?> DeleteAsync(int id);
+        Task<bool> DeleteAsync(int id);
     }
 }
