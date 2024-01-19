@@ -21,7 +21,7 @@ public partial class ProductTag
     [InverseProperty("ProductTags")]
     public virtual Product Product { get; set; } = null!;
 
-    [ForeignKey("TageId")]
+    [ForeignKey("TagId")]
     [InverseProperty("ProductTags")]
-    public virtual Tag Tage { get; set; } = null!;
+    public virtual Tag Tag { get; set; } = null!;
 }

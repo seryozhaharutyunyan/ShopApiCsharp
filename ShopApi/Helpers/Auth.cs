@@ -1,10 +1,9 @@
-﻿using System.Runtime.Intrinsics.Arm;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 
 namespace Helpers
 {
-    public static class Hash
+    public static class Auth
     {
         public static string GenerateSha256Hash(string password)
         {

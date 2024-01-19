@@ -10,9 +10,5 @@ namespace Models
 
         [Required]
         public string Password { get; set; } = null!;
-
-        [Required]
-        [Compare("Password")]
-        public string ConfirmPassword { get; set; } = null!;
     }
 }

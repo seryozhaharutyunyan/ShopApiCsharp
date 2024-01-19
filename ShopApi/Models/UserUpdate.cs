@@ -2,10 +2,11 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using Models.Interfaces;
 
 namespace Models
 {
-    public class UserUpdate
+    public class UserUpdate : IModel
     {
         [Required]
         [MinLength(2)]
@@ -27,7 +28,5 @@ namespace Models
 
         [Column(TypeName = "NVARCHAR (15)")]
         public string PostCod { get; set; } = null!;
-
-        
     }
 }

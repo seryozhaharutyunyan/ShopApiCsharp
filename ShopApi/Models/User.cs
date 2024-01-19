@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Models.Interfaces;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -11,7 +11,7 @@ namespace Models;
 [Index("Phone", IsUnique = true)]
 [Index("CityId", Name = "IndexCity")]
 [Index("RoleId", Name = "IndexRole")]
-public partial class User
+public partial class User : IModel
 {
     [Key]
     public int UserId { get; set; }
