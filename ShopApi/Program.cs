@@ -1,10 +1,8 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Models;
 using Repositories;
 using Repositories.Interfaces;
-using ShopApi;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using System.Text;
 
@@ -14,6 +12,16 @@ IConfiguration Configuration = new ConfigurationBuilder().AddJsonFile("appsettin
 builder.Services.AddEntityFrameworkSqlite().AddDbContext<ShopDb>();
 builder.Services.AddControllers();
 builder.Services.AddCors();
+builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddSession(options =>
+{
+    options.Cookie.Name = ".AdventureWorks.Session";
+    options.IdleTimeout = TimeSpan.FromHours(24);
+    options.Cookie.IsEssential = true;
+});
+
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
    .AddJwtBearer(options =>
    {
@@ -27,6 +35,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
            ValidAudience = Configuration["Jwt:Audience"],
            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
        };
+       
    });
 builder.Services.AddAuthorization();
 builder.Services.AddSwaggerGen(options =>
@@ -66,7 +75,7 @@ if (app.Environment.IsDevelopment())
         options.SwaggerEndpoint("/swagger/v1/swagger.json",
            "Shop API Version 1");
         options.SupportedSubmitMethods(new[] {
-                SubmitMethod.Get, SubmitMethod.Post,
+                SubmitMethod.Get, SubmitMethod.Post, SubmitMethod.Patch,
                 SubmitMethod.Put, SubmitMethod.Delete
         });
     });
@@ -75,7 +84,7 @@ if (app.Environment.IsDevelopment())
 // Configure the HTTP request pipeline.
 
 app.UseHttpsRedirection();
-
+app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
 

@@ -40,6 +40,8 @@ public partial class ShopDb : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
+    public virtual DbSet<UserToken> UserTokens { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         var Configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false).Build();

@@ -1,11 +1,14 @@
 ﻿using Helpers;
+using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Models;
 using Repositories.Interfaces;
+using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Security.Principal;
 using System.Text;
 
 namespace ShopApi.Controllers
@@ -28,19 +31,37 @@ namespace ShopApi.Controllers
         {
             User? user = repository.Retrieve(data.Email);
 
+
+
             if (user is not null && Auth.ValidatePassword(data.Password, user.Password))
             {
+                List<Claim> claims = new()
+                {
+                    new Claim(ClaimsIdentity.DefaultNameClaimType, user.Email),
+                    new Claim(ClaimsIdentity.DefaultRoleClaimType, user.Role.Name)
+                };
+
+                ClaimsIdentity claimsIdentity = new ClaimsIdentity(
+                    claims,
+                    "Token",
+                    ClaimsIdentity.DefaultNameClaimType,
+                    ClaimsIdentity.DefaultRoleClaimType
+                    );
+
                 SymmetricSecurityKey securityKey = new(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]));
                 SigningCredentials credentials = new(securityKey, SecurityAlgorithms.HmacSha256);
 
-                JwtSecurityToken token = new(
-                  configuration["Jwt:Issuer"],
-                  configuration["Jwt:Audience"],
-                  null,
-                  expires: DateTime.Now.AddMinutes(120),
-                  signingCredentials: credentials);
-
-                string tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+                DateTime now = DateTime.UtcNow;
+                
+                JwtSecurityToken jwt = new(
+                        issuer: configuration["Jwt:Issuer"],
+                        audience: configuration["Jwt:Audience"],
+                        notBefore: now,
+                        claims: claimsIdentity.Claims,
+                        expires: now.AddMinutes(Convert.ToInt32(configuration["Jwt:Limit"])),
+                        signingCredentials: credentials
+                        );
+                string tokenString = new JwtSecurityTokenHandler().WriteToken(jwt);
 
                 return Ok(new
                 {
@@ -63,7 +84,7 @@ namespace ShopApi.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize()]
         [Route("api/users")]
         public async Task<IActionResult> GetAll()
         {
@@ -89,6 +110,8 @@ namespace ShopApi.Controllers
         [Route("api/registration")]
         public async Task<IActionResult> Registration([FromBody] User data)
         {
+            data.CreateAt = DateTime.Now;
+
             User? user = await repository.CreateAsync(data);
 
             if (user is null)
@@ -118,7 +141,7 @@ namespace ShopApi.Controllers
                 PostCod = data.PostCod,
             };
             User? user = await repository.UpdateAsync(id, newUser);
-            if(user is null)
+            if (user is null)
             {
                 return BadRequest("Failed to edit!");
             }
@@ -137,7 +160,7 @@ namespace ShopApi.Controllers
             };
             User? user = await repository.UpdateAsync(id, newUser);
 
-            if(user is null)
+            if (user is null)
             {
                 return BadRequest("Failed to edit!");
             }

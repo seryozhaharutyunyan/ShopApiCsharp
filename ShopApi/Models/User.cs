@@ -54,12 +54,16 @@ public partial class User : IModel
     [Required]
     public int CityId { get; set; }
 
+    [Required]
+    [MinLength(3)]
     [Column(TypeName = "NVARCHAR (126)")]
     public string Address { get; set; } = null!;
 
     [Column(TypeName = "DATETIME")]
     public DateTime CreateAt { get; set; }
 
+    [Required]
+    [MinLength(2)]
     [Column(TypeName = "NVARCHAR (15)")]
     public string PostCod { get; set; } = null!;
 
