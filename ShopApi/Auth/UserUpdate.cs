@@ -1,10 +1,8 @@
-﻿using Models;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 using Models.Interfaces;
 
-namespace Models
+namespace Auth
 {
     public class UserUpdate : IModel
     {
@@ -15,7 +13,7 @@ namespace Models
 
         [Required]
         public string Password { get; set; } = null!;
-        
+
         [Required]
         [Phone]
         public string Phone { get; set; } = null!;

@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Models
+namespace Auth
 {
-    public class Login
+    public class UserLogin
     {
         [Required]
         [EmailAddress]

@@ -1,6 +1,4 @@
-﻿using Models.Interfaces;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +9,7 @@ namespace Models;
 [Index("Phone", IsUnique = true)]
 [Index("CityId", Name = "IndexCity")]
 [Index("RoleId", Name = "IndexRole")]
-public partial class User : IModel
+public partial class User
 {
     [Key]
     public int UserId { get; set; }

@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Models;
+﻿using Models;
 using Repositories.Interfaces;
 
 namespace Repositories
@@ -29,7 +28,7 @@ namespace Repositories
             }
 
             db.Roles.Remove(role);
-            return await db.SaveChangesAsync() == 1 ? true : false;
+            return await db.SaveChangesAsync() == 1;
         }
 
         public async Task<IEnumerable<Role>> RetrieveAllAsync()
@@ -41,7 +40,7 @@ namespace Repositories
         public async Task<Role?> RetrieveAsync(int id)
         {
             Role? role = await db.Roles.FindAsync(id);
-            return role is null ? null : role;
+            return role;
         }
 
         public async Task<Role?> UpdateAsync(int id, Role data)

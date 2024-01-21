@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Models;
+﻿using Models;
 using Repositories.Interfaces;
 
 namespace Repositories
@@ -30,7 +28,7 @@ namespace Repositories
             }
 
             db.Categories.Remove(category);
-            return await db.SaveChangesAsync() == 1 ? true : false;
+            return await db.SaveChangesAsync() == 1;
         }
 
         public async Task<IEnumerable<Category>> RetrieveAllAsync()
@@ -42,7 +40,7 @@ namespace Repositories
         public async Task<Category?> RetrieveAsync(int id)
         {
             Category? category = await db.Categories.FindAsync(id);
-            return category is null ? null : category;
+            return category;
         }
 
         public async Task<Category?> UpdateAsync(int id, Category data)

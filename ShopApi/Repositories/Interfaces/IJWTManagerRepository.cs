@@ -1,12 +1,11 @@
-﻿using Tokens;
-using System.Security.Claims;
+﻿using Auth;
+using Models;
 
 namespace Repositories.Interfaces
 {
     public interface IJWTManagerRepository
     {
-        Token? GenerateToken(string userEmail);
-        Token? GenerateRefreshToken(string userEmail);
-        ClaimsPrincipal GetPrincipalFromExpiredToken(string token);
+        Tokens GenerateToken(User data);
+        Tokens GenerateRefreshToken(User data);
     }
 }

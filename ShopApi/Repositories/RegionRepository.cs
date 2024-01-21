@@ -28,7 +28,7 @@ namespace Repositories
             }
 
             db.Regions.Remove(region);
-            return await db.SaveChangesAsync() == 1 ? true : false;
+            return await db.SaveChangesAsync() == 1;
         }
 
         public async Task<IEnumerable<Region>> RetrieveAllAsync()
@@ -40,7 +40,7 @@ namespace Repositories
         public async Task<Region?> RetrieveAsync(int id)
         {
             Region? region = await db.Regions.FindAsync(id);
-            return region is null ? null : region;
+            return region;
         }
 
         public async Task<Region?> UpdateAsync(int id, Region data)

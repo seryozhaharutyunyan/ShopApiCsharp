@@ -1,7 +1,7 @@
 ﻿using Models.Interfaces;
 using System.ComponentModel.DataAnnotations;
 
-namespace Models
+namespace Auth
 {
     public class UserUpdatePassword : IModel
     {

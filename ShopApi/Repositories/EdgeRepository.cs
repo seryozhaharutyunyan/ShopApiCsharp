@@ -28,7 +28,7 @@ namespace Repositories
             }
 
             db.Edges.Remove(edge);
-            return await db.SaveChangesAsync() == 1 ? true : false;
+            return await db.SaveChangesAsync() == 1;
         }
 
         public async Task<IEnumerable<Edge>> RetrieveAllAsync()
@@ -40,7 +40,7 @@ namespace Repositories
         public async Task<Edge?> RetrieveAsync(int id)
         {
             Edge? edge = await db.Edges.FindAsync(id);
-            return edge is null ? null : edge;
+            return edge;
         }
 
         public async Task<Edge?> UpdateAsync(int id, Edge data)

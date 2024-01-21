@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Models;
+﻿using Models;
 using Repositories.Interfaces;
 
 namespace Repositories
@@ -29,7 +28,7 @@ namespace Repositories
             }
 
             db.Comments.Remove(comment);
-            return await db.SaveChangesAsync() == 1 ? true : false;
+            return await db.SaveChangesAsync() == 1;
         }
 
         public async Task<IEnumerable<Comment>> RetrieveAllAsync()
@@ -41,7 +40,7 @@ namespace Repositories
         public async Task<Comment?> RetrieveAsync(int id)
         {
             Comment? comment = await db.Comments.FindAsync(id);
-            return comment is null ? null : comment;
+            return comment;
         }
 
         public async Task<Comment?> UpdateAsync(int id, Comment data)

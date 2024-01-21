@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Models;
+﻿using Models;
 using Repositories.Interfaces;
 
 namespace Repositories
@@ -29,7 +28,7 @@ namespace Repositories
             }
 
             db.Cities.Remove(city);
-            return await db.SaveChangesAsync() == 1 ? true : false;
+            return await db.SaveChangesAsync() == 1;
         }
 
         public async Task<IEnumerable<City>> RetrieveAllAsync()
@@ -41,7 +40,7 @@ namespace Repositories
         public async Task<City?> RetrieveAsync(int id)
         {
             City? city = await db.Cities.FindAsync(id);
-            return city is null ? null : city;
+            return city;
         }
 
         public async Task<City?> UpdateAsync(int id, City data)

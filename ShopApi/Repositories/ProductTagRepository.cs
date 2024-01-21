@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Models;
+﻿using Models;
 using Repositories.Interfaces;
 
 namespace Repositories
@@ -29,7 +28,7 @@ namespace Repositories
             }
 
             db.ProductTags.Remove(productTag);
-            return await db.SaveChangesAsync() == 1 ? true : false;
+            return await db.SaveChangesAsync() == 1;
         }
 
         public async Task<IEnumerable<ProductTag>> RetrieveAllAsync()
@@ -41,7 +40,7 @@ namespace Repositories
         public async Task<ProductTag?> RetrieveAsync(int id)
         {
             ProductTag? productTag = await db.ProductTags.FindAsync(id);
-            return productTag is null ? null : productTag;
+            return productTag;
         }
 
         public async Task<ProductTag?> UpdateAsync(int id, ProductTag data)

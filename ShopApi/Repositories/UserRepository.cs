@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Models;
-using Models.Interfaces;
+﻿using Models;
 using Repositories.Interfaces;
 
 namespace Repositories
@@ -16,17 +14,8 @@ namespace Repositories
 
         public User? Retrieve(string email)
         {
-            IQueryable<User> users = db.Users.Where(u=>
-                u.Email == email
-            );
-
-            User? user = null;
-            foreach (User u in users)
-            {
-                user = u;
-            }
-
-            return user is null ? null : user;
+            User? user = db.Users.FirstOrDefault(u=>u.Email == email);
+            return user;
 
         }
 
@@ -46,7 +35,7 @@ namespace Repositories
             }
 
             db.Users.Remove(user);
-            return await db.SaveChangesAsync() == 1 ? true : false;
+            return await db.SaveChangesAsync() == 1;
         }
 
         public async Task<IEnumerable<User>> RetrieveAllAsync()
