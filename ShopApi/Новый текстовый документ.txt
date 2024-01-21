@@ -1,1 +1,0 @@
-dotnet ef dbcontext scaffold "Filename=Shop.db" Microsoft.EntityFrameworkCore.Sqlite --table Categories --table Products --table Orders --table Likes --table Edges --table Regions --table Cities --table ProductTags --table Tags --table Users --table Roles --table Comments --output-dir Models --namespace WorkingWithEFCore.AutoGen --data-annotations --context ShopDb
