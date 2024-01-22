@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Middlewares;
 using Models;
 using Repositories;
 using Repositories.Interfaces;
@@ -109,6 +110,7 @@ if (app.Environment.IsDevelopment())
 
 // Configure the HTTP request pipeline.
 
+app.UseMiddleware<TokenMiddleware>();
 app.UseHttpsRedirection();
 app.UseSession();
 

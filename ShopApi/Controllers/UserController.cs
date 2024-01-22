@@ -166,8 +166,6 @@ namespace Controllers
                 userTokenRepository.UpdateAsync(savedUserToken);
             }
 
-            Response.Headers.Remove("Authorization");
-
             return Unauthorized();
         }
 
@@ -218,7 +216,6 @@ namespace Controllers
 
         [Authorize]
         [HttpPut("api/user/update/{id}")]
-        //[Route("api/user/update/{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] UserUpdate data)
         {
             User newUser = new()
