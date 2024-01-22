@@ -1,9 +1,8 @@
-﻿using Models.Interfaces;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Auth
 {
-    public class UserUpdatePassword : IModel
+    public class UserUpdatePassword
     {
         [Required]
         public string Password { get; set; } = null!;

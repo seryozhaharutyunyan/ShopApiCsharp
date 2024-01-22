@@ -1,4 +1,5 @@
-﻿using Models;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Models;
 using Repositories.Interfaces;
 
 namespace Repositories
@@ -8,25 +9,36 @@ namespace Repositories
         //private readonly UserManager<IdentityUser> _userManager;
         private readonly ShopDb db;
 
-        public UserTokenRepository( ShopDb db)
+        public UserTokenRepository(ShopDb db)
         {
             //_userManager = userManager;
             this.db = db;
         }
 
+        public UserToken? RetrieveIsInvalid(UserToken data)
+        {
+            UserToken? userToken = db.UserTokens.FirstOrDefault(x =>
+            x.UserEmail == data.UserEmail &&
+            x.IsActive == data.IsActive);
+
+            return userToken;
+        }
+        
         public UserToken? Retrieve(UserToken data)
         {
-            UserToken? userToken = db.UserTokens.FirstOrDefault(x=> 
+            UserToken? userToken = db.UserTokens.FirstOrDefault(x =>
             x.UserEmail == data.UserEmail &&
-            x.Token == data.Token &&
-            x.IsActive == true);
+            x.AccessToken == data.AccessToken &&
+            x.RefreshToken == data.RefreshToken &&
+            x.IsActive == data.IsActive);
+
             return userToken;
         }
 
         public async Task<UserToken?> CreateAsync(UserToken data)
         {
             UserToken userToken = (await db.UserTokens.AddAsync(data)).Entity;
-            return await db.SaveChangesAsync() == 1 ? userToken : null;  
+            return await db.SaveChangesAsync() == 1 ? userToken : null;
         }
 
         public async Task<bool?> DeleteAsync(UserToken data)
@@ -50,7 +62,7 @@ namespace Repositories
             }
 
             db.Update(data);
-            return await db.SaveChangesAsync() == 1 ? data: null;
+            return await db.SaveChangesAsync() == 1 ? data : null;
         }
     }
 }

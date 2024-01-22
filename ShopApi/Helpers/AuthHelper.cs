@@ -69,7 +69,15 @@ namespace Helpers
             string refreshToken = GenerateRefreshToken();
 
             return new Tokens { Access_Token = tokenString, Refresh_Token = refreshToken };
+        }
 
+        public static IEnumerable<Claim>? TokenDecode(string token)
+        {
+            JwtSecurityTokenHandler tokenHandler = new();
+            SecurityToken? securityToken = tokenHandler.ReadToken(token);
+            JwtSecurityToken? jwtSecurityToken = securityToken as JwtSecurityToken;
+
+            return jwtSecurityToken?.Claims;
         }
     }
 }

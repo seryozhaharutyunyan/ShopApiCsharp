@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Models;
 using Repositories.Interfaces;
 
-namespace ShopApi.Controllers
+namespace Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -17,7 +17,7 @@ namespace ShopApi.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Get()
         {
             IEnumerable<Tag> tags = await repository.RetrieveAllAsync();
@@ -25,6 +25,7 @@ namespace ShopApi.Controllers
             return Ok(tags);
         }
 
+        [Authorize(Roles = "admin")]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -39,6 +40,7 @@ namespace ShopApi.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Set([FromBody] Tag data)
         {
             Tag? tag = await repository.CreateAsync(data);
@@ -50,6 +52,7 @@ namespace ShopApi.Controllers
             return Ok(tag);
         }
 
+        [Authorize(Roles = "admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] Tag data)
         {
@@ -63,6 +66,7 @@ namespace ShopApi.Controllers
             return Ok(tag);
         }
 
+        [Authorize(Roles = "admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

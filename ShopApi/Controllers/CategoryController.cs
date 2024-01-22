@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Models;
 using Repositories.Interfaces;
 
-namespace ShopApi.Controllers
+namespace Controllers
 {
     [ApiController]
+    [Authorize(Roles = "admin")]
     [Route("api/[controller]")]
     public class CategoryController : ControllerBase
     {
@@ -63,7 +65,7 @@ namespace ShopApi.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Dellete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             bool? flag = await repository.DeleteAsync(id);
 

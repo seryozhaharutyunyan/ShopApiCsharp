@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Models;
 using Repositories.Interfaces;
 
-namespace ShopApi.Controllers
+namespace Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/[controller]")]
     public class CommentController : ControllerBase
     {

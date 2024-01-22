@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Models;
 using Repositories.Interfaces;
 
-namespace ShopApi.Controllers
+namespace Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -15,6 +16,7 @@ namespace ShopApi.Controllers
             this.repository = repository;
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -23,6 +25,7 @@ namespace ShopApi.Controllers
             return Ok(orders);
         }
 
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -36,6 +39,7 @@ namespace ShopApi.Controllers
             return Ok(order);
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Set([FromBody] Order data)
         {
@@ -48,6 +52,7 @@ namespace ShopApi.Controllers
             return Ok(order);
         }
 
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] Order data)
         {
@@ -61,6 +66,7 @@ namespace ShopApi.Controllers
             return Ok(order);
         }
 
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

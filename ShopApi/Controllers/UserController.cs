@@ -2,14 +2,13 @@
 using Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using Models;
 using Repositories.Interfaces;
-using System.IdentityModel.Tokens.Jwt;
+using System.Collections.Generic;
 using System.Security.Claims;
 
 
-namespace ShopApi.Controllers
+namespace Controllers
 {
     [ApiController]
     public class UserController : ControllerBase
@@ -32,6 +31,7 @@ namespace ShopApi.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         [Route("api/login")]
         public async Task<IActionResult> Login()
         {
@@ -48,20 +48,35 @@ namespace ShopApi.Controllers
 
             if (true)
             {
-                
+
                 Tokens token = jwtManager.GenerateToken(user);
 
                 UserToken userToken = new()
                 {
                     UserEmail = user.Email,
-                    Token = token.Refresh_Token
+                    RefreshToken = token.Refresh_Token,
+                    AccessToken = token.Access_Token,
+                    IsActive = 0
                 };
 
-                if (await userTokenRepository.CreateAsync(userToken) is null)
-                {
-                    return Unauthorized("Invalid token!");
-                }
+                UserToken? savedUserToken = userTokenRepository.RetrieveIsInvalid(userToken);
+                userToken.IsActive = 1;
 
+                if (savedUserToken is null)
+                {
+                    if (await userTokenRepository.CreateAsync(userToken) is null)
+                    {
+                        return Unauthorized("Invalid token!");
+                    }
+                }
+                else
+                {
+                    savedUserToken.IsActive = 1;
+                    if (await userTokenRepository.UpdateAsync(savedUserToken) is null)
+                    {
+                        return Unauthorized("Invalid token!");
+                    }
+                }
 
                 return Ok(token);
             }
@@ -70,25 +85,26 @@ namespace ShopApi.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         [Route("api/refresh")]
         public async Task<IActionResult> Refresh([FromForm] Tokens token)
         {
-            JwtSecurityTokenHandler tokenHandler = new();
-            SecurityToken? securityToken = tokenHandler.ReadToken(token.Access_Token);
-            JwtSecurityToken? jwtSecurityToken = securityToken as JwtSecurityToken;
-            if(jwtSecurityToken is null)
+            IEnumerable<Claim>? claims = AuthHelper.TokenDecode(token.Access_Token);
+            if (claims is null)
             {
                 return Unauthorized("Invalid attempt!");
             }
 
             UserToken userToken = new()
             {
-                UserEmail = jwtSecurityToken.Claims.First(claim => claim.Type == ClaimTypes.Email).Value,
-                Token = token.Refresh_Token
+                UserEmail = claims.First(claim => claim.Type == ClaimTypes.Email).Value,
+                RefreshToken = token.Refresh_Token,
+                AccessToken = token.Access_Token,
+                IsActive = 1
             };
 
             //User? user = userRepository.Retrieve(userToken.UserEmail);
-            User user = new()
+            User? user = new()
             {
                 UserId = 5,
                 Email = "admin@mail.ru",
@@ -103,41 +119,60 @@ namespace ShopApi.Controllers
             {
                 return Unauthorized("Invalid attempt!");
             }
-            if (savedUserToken.Token != token.Refresh_Token)
+            if (savedUserToken.RefreshToken != token.Refresh_Token)
             {
                 return Unauthorized("Invalid attempt!");
             }
 
             Tokens newToken = jwtManager.GenerateRefreshToken(user);
 
-            if (newToken == null)
+            if (newToken is null)
             {
                 return Unauthorized("Invalid attempt!");
             }
 
-            UserToken? userTokenDelete = userTokenRepository.Retrieve(userToken);
+            savedUserToken.RefreshToken = newToken.Refresh_Token;
+            savedUserToken.AccessToken = newToken.Access_Token;
+            await userTokenRepository.UpdateAsync(savedUserToken);
 
-            if(userTokenDelete is not null)
-            {
-                await userTokenRepository.DeleteAsync(userTokenDelete);
-            }
-            
-            userToken.Token = newToken.Refresh_Token;
-            await userTokenRepository.CreateAsync(userToken);
-            
             return Ok(newToken);
         }
 
-        [HttpGet]
+        [HttpPost]
         [Authorize]
         [Route("api/logout")]
-        public IActionResult Logout()
+        public IActionResult Logout([FromForm] Tokens token)
         {
+            IEnumerable<Claim>? claims = AuthHelper.TokenDecode(token.Access_Token);
+
+            if (claims is null)
+            {
+                return BadRequest();
+            }
+
+            UserToken userToken = new()
+            {
+                UserEmail = claims.First(claim => claim.Type == ClaimTypes.Email).Value,
+                AccessToken = token.Access_Token,
+                RefreshToken = token.Refresh_Token,
+                IsActive = 1
+            };
+
+            UserToken? savedUserToken = userTokenRepository.Retrieve(userToken);
+
+            if (savedUserToken is not null)
+            {
+                savedUserToken.IsActive = 0;
+                userTokenRepository.UpdateAsync(savedUserToken);
+            }
+
+            Response.Headers.Remove("Authorization");
+
             return Unauthorized();
         }
 
         [HttpGet]
-        [Authorize()]
+        [Authorize(Roles = "admin")]
         [Route("api/users")]
         public async Task<IActionResult> GetAll()
         {
@@ -160,6 +195,7 @@ namespace ShopApi.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         [Route("api/registration")]
         public async Task<IActionResult> Registration([FromBody] User data)
         {
@@ -180,6 +216,7 @@ namespace ShopApi.Controllers
             return await Login();
         }
 
+        [Authorize]
         [HttpPut("api/user/update/{id}")]
         //[Route("api/user/update/{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] UserUpdate data)
@@ -202,8 +239,8 @@ namespace ShopApi.Controllers
             return Ok();
         }
 
+        [Authorize]
         [HttpPut("api/user/updatePassword/{id}")]
-        //[Route("api/user/updatePassword/{id}")]
         public async Task<IActionResult> PasswordUpdate(int id, [FromBody] UserUpdatePassword data)
         {
             User newUser = new()
@@ -231,7 +268,7 @@ namespace ShopApi.Controllers
             if (user is not null && AuthHelper.ValidatePassword(password, user.Password))
             {
                 bool flag = await userRepository.DeleteAsync(id);
-                Logout();
+
                 return Ok(flag);
             }
 

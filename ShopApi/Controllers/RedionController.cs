@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Models;
 using Repositories.Interfaces;
 
-namespace ShopApi.Controllers
+namespace Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -36,6 +37,7 @@ namespace ShopApi.Controllers
             return Ok(region);
         }
 
+        [Authorize(Roles = "admin")]
         [HttpPost]
         public async Task<IActionResult> Set([FromBody] Region data)
         {
@@ -48,6 +50,7 @@ namespace ShopApi.Controllers
             return Ok(region);
         }
 
+        [Authorize(Roles = "admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] Region data)
         {
@@ -61,6 +64,7 @@ namespace ShopApi.Controllers
             return Ok(region);
         }
 
+        [Authorize(Roles = "admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

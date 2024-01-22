@@ -1,10 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using Models.Interfaces;
 
 namespace Auth
 {
-    public class UserUpdate : IModel
+    public class UserUpdate
     {
         [Required]
         [MinLength(2)]
