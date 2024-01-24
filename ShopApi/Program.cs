@@ -13,7 +13,6 @@ string? key = builder.Configuration.GetSection("Jwt:Key").Value;
 string? issuer = builder.Configuration.GetSection("Jwt:Issuer").Value;
 string? audience = builder.Configuration.GetSection("Jwt:Audience").Value;
 
-Console.WriteLine(key);
 // Add services to the container.
 builder.Services.AddEntityFrameworkSqlite().AddDbContext<ShopDb>();
 builder.Services.AddControllers();
@@ -30,7 +29,7 @@ builder.Services.AddSession(options =>
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 
 }

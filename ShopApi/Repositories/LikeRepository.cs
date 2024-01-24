@@ -1,5 +1,6 @@
 ﻿using Models;
 using Repositories.Interfaces;
+using System.Net.Mail;
 
 namespace Repositories
 {
@@ -12,50 +13,29 @@ namespace Repositories
             this.db = db;
         }
 
-        public async Task<Like?> CreateAsync(Like data)
+        public async Task<bool> Attach(Like data)
         {
-            Like like = (await db.Likes.AddAsync(data)).Entity;
-            return await db.SaveChangesAsync() == 1 ? like : null;
-        }
-
-        public async Task<bool?> DeleteAsync(int id)
-        {
-            Like? like = db.Likes.Find(id);
+            Like? like = RetrieveAsync(data);
 
             if (like is null)
             {
-                return null;
+                await db.Likes.AddAsync(data);
             }
-
-            db.Likes.Remove(like);
+            else
+            {
+                db.Likes.Remove(data);
+            }
             return await db.SaveChangesAsync() == 1;
         }
 
-        public async Task<IEnumerable<Like>> RetrieveAllAsync()
+        public Like? RetrieveAsync(Like data)
         {
-            IEnumerable<Like> likes = db.Likes.ToList();
-            return await Task.FromResult<IEnumerable<Like>>(likes);
-        }
-
-        public async Task<Like?> RetrieveAsync(int id)
-        {
-            Like? like = await db.Likes.FindAsync(id);
+            Like? like = db.Likes.FirstOrDefault(l =>
+                l.ProductId == data.ProductId && 
+                l.UserId == data.UserId
+            );
             return like;
         }
 
-        public async Task<Like?> UpdateAsync(int id, Like data)
-        {
-            try
-            {         
-                data.LikeId = id;
-                Like like = (db.Likes.Update(data)).Entity;
-
-                return await db.SaveChangesAsync() == 1 ? like : null;
-            }  
-            catch
-            {
-                return null;
-            } 
-        }
     }
 }
