@@ -9,6 +9,15 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "MyAllowSpecificOrigins",
+                      policy =>
+                      {
+                          policy.WithOrigins("http://localhost:4200/");
+                      });
+});
+
 string? key = builder.Configuration.GetSection("Jwt:Key").Value;
 string? issuer = builder.Configuration.GetSection("Jwt:Issuer").Value;
 string? audience = builder.Configuration.GetSection("Jwt:Audience").Value;
@@ -112,6 +121,7 @@ if (app.Environment.IsDevelopment())
 app.UseMiddleware<TokenMiddleware>();
 app.UseHttpsRedirection();
 app.UseSession();
+app.UseCors("MyAllowSpecificOrigins");
 
 app.UseAuthentication();
 app.UseAuthorization();

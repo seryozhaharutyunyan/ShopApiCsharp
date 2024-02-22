@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Configuration } from './_helpers/Configuration';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,8 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'ShopAdmin';
+  a:object | undefined = Configuration.getConfiguration("Url");
+  ok(){
+    console.log(this.a);
+  }
 }

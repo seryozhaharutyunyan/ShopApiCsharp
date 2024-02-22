@@ -35,9 +35,13 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.css",
+              "../node_modules/bootstrap/dist/css/bootstrap.min.css"
             ],
-            "scripts": []
+            "scripts": [
+              "../node_modules/bootstrap/dist/js/bootstrap.min.js",
+              "../node_modules/jquery/dist/jquery.min.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -94,13 +98,20 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.css",
+              "../node_modules/bootstrap/dist/css/bootstrap.min.css"
             ],
-            "scripts": [],
+            "scripts": [
+              "../node_modules/bootstrap/dist/js/bootstrap.min.js",
+              "../node_modules/jquery/dist/jquery.min.js"
+            ],
             "karmaConfig": "karma.conf.js"
           }
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "4f00958f-1d49-40fb-a7fc-d75675814c16"
   }
 }
