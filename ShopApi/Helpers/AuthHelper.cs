@@ -10,21 +10,32 @@ namespace Helpers
 {
     public static class AuthHelper
     {
-        public static string GenerateSha256Hash(string password)
+        public static string GenerateHash(string password, string slat = "")
         {
-            using (SHA256 sha = SHA256.Create())
+            using (SHA512 sha = SHA512.Create())
             {
-                byte[] passwordHash = sha.ComputeHash(
+                byte[] pHash = sha.ComputeHash(
                     Encoding.Unicode.GetBytes(password)
                     );
+                
+                byte[] sHash = sha.ComputeHash(
+                    Encoding.Unicode.GetBytes(slat)
+                    );
 
-                return Convert.ToBase64String(passwordHash);
+                string passwordHash = Encoding.Unicode.GetString(sHash) +
+                    Encoding.Unicode.GetString(pHash);
+
+                byte[] passwordData = sha.ComputeHash(
+                    Encoding.Unicode.GetBytes(passwordHash)
+                    );
+
+                return Convert.ToBase64String(passwordData);
             }
         }
 
-        public static bool ValidatePassword(string password, string passwordHash)
+        public static bool ValidatePassword(string password, string passwordHash, string slat = "")
         {
-            password = GenerateSha256Hash(password);
+            password = GenerateHash(password, slat);
 
             return password == passwordHash;
         }
